@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}Browse Books - UNIKL Library{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <!-- Sidebar Filters -->
+    <div class="col-md-3 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-funnel me-2"></i>Filters</h6>
+            </div>
+            <div class="card-body">
+                <!-- Search -->
+                <form method="get" action="">
+                    <div class="mb-3">
+                        <label class="form-label small">Search</label>
+                        <input type="text" name="search" class="form-control" placeholder="Title, author, ISBN..."
+                            value="{{ search }}">
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="mb-3">
+                        <label class="form-label small">Category</label>
+                        <select name="category" class="form-select">
+                            <option value="">All Categories</option>
+                            {% for category in categories %}
+                            <option value="{{ category.slug }}" {% if current_category==category.slug %}selected{% endif
+                                %}>
+                                {{ category.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Availability -->
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="available" value="true" {% if
+                                request.GET.available %}checked{% endif %} id="availableCheck">
+                            <label class="form-check-label" for="availableCheck">Available only</label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search me-1"></i>Search
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Book Grid -->
+    <div class="col-md-9">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4><i class="bi bi-collection me-2"></i>Books</h4>
+            <span class="badge bg-primary">{{ page_obj.paginator.count }} books</span>
+        </div>
+
+        {% if books %}
+        <div class="row">
+            {% for book in books %}
+            <div class="col-md-4 mb-4">
+                <div class="card book-card h-100">
+                    <div class="card-body">
+                        <h6 class="card-title text-truncate" title="{{ book.title }}">{{ book.title }}</h6>
+                        <p class="text-muted small mb-2">
+                            <i class="bi bi-person me-1"></i>{{ book.author }}
+                        </p>
+                        {% if book.category %}
+                        <span class="badge bg-secondary mb-2">{{ book.category.name }}</span>
+                        {% endif %}
+
+                        <p class="small mb-2">
+                            <i class="bi bi-upc me-1"></i>ISBN: {{ book.isbn }}
+                        </p>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="{% if book.is_available %}text-success{% else %}text-danger{% endif %}">
+                                <i
+                                    class="bi bi-{% if book.is_available %}check-circle{% else %}x-circle{% endif %} me-1"></i>
+                                {% if book.is_available %}
+                                {{ book.available_copies }}/{{ book.total_copies }}
+                                {% else %}
+                                Unavailable
+                                {% endif %}
+                            </span>
+                            <a href="{% url 'books:book_detail' book.pk %}" class="btn btn-outline-light btn-sm">
+                                View
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link"
+                        href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}">Previous</a>
+                </li>
+                {% endif %}
+
+                <li class="page-item active">
+                    <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+                </li>
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link"
+                        href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-book" style="font-size: 60px; color: var(--text-muted);"></i>
+            <p class="text-muted mt-3">No books found matching your criteria.</p>
+            <a href="{% url 'books:book_list' %}" class="btn btn-outline-light">Clear Filters</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,253 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | UNIKL Library System{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">UNIKL Library System</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* Background image for all admin pages */
+    html {
+        min-height: 100%;
+    }
+
+    body {
+        background: url('{% static "admin/img/library_bg.png" %}') no-repeat center center fixed !important;
+        background-size: cover !important;
+        min-height: 100vh;
+    }
+
+    /* Header styling */
+    #header {
+        background: linear-gradient(135deg, #5dade2, #3498db) !important;
+        padding: 15px 20px !important;
+    }
+
+    #branding h1,
+    #branding h1 a {
+        color: white !important;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Container */
+    #container {
+        background: rgba(30, 39, 46, 0.85) !important;
+        min-height: 100vh;
+    }
+
+    /* Sidebar */
+    nav.sticky {
+        background: rgba(30, 39, 46, 0.95) !important;
+    }
+
+    /* Content */
+    #content {
+        background: rgba(44, 62, 80, 0.9) !important;
+        border-radius: 8px;
+        margin: 15px;
+        padding: 20px !important;
+    }
+
+    /* ============================================
+       DASHBOARD MODULE STYLING - FIX INVISIBLE TEXT
+       ============================================ */
+
+    /* App headers (ACCOUNTS, BOOK MANAGEMENT, etc.) */
+    .module h2,
+    .module caption {
+        background: linear-gradient(135deg, #2c3e50, #34495e) !important;
+        color: white !important;
+    }
+
+    .module {
+        background: rgba(30, 39, 46, 0.9) !important;
+        border-radius: 8px;
+        border: none !important;
+    }
+
+    /* Model rows - DARK background with WHITE text */
+    .module table tbody tr {
+        background: rgba(44, 62, 80, 0.95) !important;
+    }
+
+    .module table tbody tr:hover {
+        background: rgba(52, 73, 94, 0.95) !important;
+    }
+
+    /* Model name links - make them WHITE and visible */
+    .module table tbody tr th a,
+    .module table tbody tr td a,
+    .module tbody th a,
+    .module tbody td a {
+        color: white !important;
+        font-weight: 500;
+    }
+
+    .module table tbody tr th a:hover,
+    .module table tbody tr td a:hover {
+        color: #5dade2 !important;
+    }
+
+    /* Action links (Add, Change, View) */
+    .module table td a,
+    .addlink,
+    .changelink,
+    .viewlink {
+        color: #5dade2 !important;
+    }
+
+    /* Table headers */
+    th {
+        background: linear-gradient(135deg, #5dade2, #3498db) !important;
+        color: white !important;
+    }
+
+    /* General links */
+    a:link,
+    a:visited {
+        color: #5dade2;
+    }
+
+    a:hover {
+        color: #85c1e9;
+    }
+
+    /* Buttons */
+    .submit-row input,
+    .button,
+    input[type="submit"],
+    a.button {
+        background: linear-gradient(135deg, #5dade2, #3498db) !important;
+        border: none !important;
+        border-radius: 6px !important;
+        color: white !important;
+        padding: 10px 20px !important;
+    }
+
+    .submit-row input:hover,
+    .button:hover,
+    input[type="submit"]:hover {
+        background: linear-gradient(135deg, #85c1e9, #5dade2) !important;
+    }
+
+    /* Forms */
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="number"],
+    textarea,
+    select {
+        background: rgba(44, 62, 80, 0.9) !important;
+        border: 2px solid rgba(93, 173, 226, 0.3) !important;
+        color: #ecf0f1 !important;
+        border-radius: 6px !important;
+        padding: 8px 12px !important;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+        border-color: #5dade2 !important;
+        outline: none !important;
+    }
+
+    /* Breadcrumbs */
+    .breadcrumbs {
+        background: rgba(44, 62, 80, 0.8) !important;
+        color: #ecf0f1 !important;
+    }
+
+    .breadcrumbs a {
+        color: #5dade2 !important;
+    }
+
+    /* Messages */
+    .messagelist li {
+        background: rgba(93, 173, 226, 0.2) !important;
+        border-left: 4px solid #5dade2 !important;
+        color: #ecf0f1 !important;
+    }
+
+    /* Result list tables */
+    #result_list tbody tr:nth-child(odd) {
+        background: rgba(44, 62, 80, 0.5) !important;
+    }
+
+    #result_list tbody tr:nth-child(even) {
+        background: rgba(30, 39, 46, 0.5) !important;
+    }
+
+    #result_list td,
+    #result_list th {
+        color: #ecf0f1 !important;
+    }
+
+    /* Filters */
+    #changelist-filter {
+        background: rgba(30, 39, 46, 0.9) !important;
+        border-radius: 8px;
+    }
+
+    #changelist-filter h2 {
+        background: linear-gradient(135deg, #5dade2, #3498db) !important;
+        color: white !important;
+    }
+
+    #changelist-filter li a {
+        color: #5dade2 !important;
+    }
+
+    /* User tools */
+    #user-tools {
+        color: #ecf0f1 !important;
+    }
+
+    #user-tools a {
+        color: white !important;
+        border-color: white !important;
+    }
+
+    /* Recent actions module */
+    #recent-actions-module h2 {
+        background: linear-gradient(135deg, #2c3e50, #34495e) !important;
+        color: white !important;
+    }
+
+    #recent-actions-module li a {
+        color: #5dade2 !important;
+    }
+
+    #recent-actions-module .mini.quiet {
+        color: #bdc3c7 !important;
+    }
+
+    /* General text colors */
+    body,
+    p,
+    span,
+    div,
+    label,
+    td,
+    li {
+        color: #ecf0f1;
+    }
+
+    /* Index title */
+    h1,
+    h2,
+    h3 {
+        color: #ecf0f1 !important;
+    }
+
+    /* Caption styling */
+    caption {
+        color: white !important;
+    }
+</style>
+{% endblock %}

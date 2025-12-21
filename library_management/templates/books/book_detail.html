@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ book.title }} - UNIKL Library{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-8">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb" style="background: transparent;">
+                <li class="breadcrumb-item"><a href="{% url 'books:book_list' %}">Books</a></li>
+                <li class="breadcrumb-item active">{{ book.title|truncatechars:30 }}</li>
+            </ol>
+        </nav>
+
+        <div class="card">
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-4">
+                        {% if book.cover_image %}
+                        <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="img-fluid rounded"
+                            style="max-height: 300px;">
+                        {% else %}
+                        <div class="bg-secondary rounded d-flex align-items-center justify-content-center"
+                            style="height: 250px;">
+                            <i class="bi bi-book" style="font-size: 80px; opacity: 0.5;"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <h3>{{ book.title }}</h3>
+                        <p class="text-muted mb-3">
+                            <i class="bi bi-person me-1"></i>by {{ book.author }}
+                        </p>
+
+                        {% if book.category %}
+                        <span class="badge bg-primary mb-3">{{ book.category.name }}</span>
+                        {% endif %}
+
+                        <table class="table table-sm table-borderless mt-3">
+                            <tr>
+                                <td style="width: 120px; color: var(--text-muted);">ISBN</td>
+                                <td>{{ book.isbn }}</td>
+                            </tr>
+                            {% if book.publisher %}
+                            <tr>
+                                <td style="color: var(--text-muted);">Publisher</td>
+                                <td>{{ book.publisher }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if book.publication_year %}
+                            <tr>
+                                <td style="color: var(--text-muted);">Year</td>
+                                <td>{{ book.publication_year }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if book.pages %}
+                            <tr>
+                                <td style="color: var(--text-muted);">Pages</td>
+                                <td>{{ book.pages }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <td style="color: var(--text-muted);">Language</td>
+                                <td>{{ book.language }}</td>
+                            </tr>
+                            {% if book.location %}
+                            <tr>
+                                <td style="color: var(--text-muted);">Location</td>
+                                <td><i class="bi bi-geo-alt me-1"></i>{{ book.location }}</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+
+                        {% if book.description %}
+                        <h6 class="mt-4">Description</h6>
+                        <p>{{ book.description }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar - Borrow/Reserve -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-bookmark me-2"></i>Availability</h6>
+            </div>
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <span class="display-6 {% if book.is_available %}text-success{% else %}text-danger{% endif %}">
+                        {{ book.available_copies }}
+                    </span>
+                    <span class="text-muted">/ {{ book.total_copies }} available</span>
+                </div>
+
+                <span
+                    class="badge bg-{% if book.status == 'AVAILABLE' %}success{% elif book.status == 'BORROWED' %}warning{% else %}secondary{% endif %} mb-3">
+                    {{ book.get_status_display }}
+                </span>
+
+                {% if user.is_authenticated %}
+                {% if has_borrowed %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-1"></i>You have already borrowed this book.
+                </div>
+                <a href="{% url 'books:my_books' %}" class="btn btn-outline-light w-100">
+                    View My Books
+                </a>
+                {% elif book.is_available %}
+                <form method="post" action="{% url 'books:borrow_book' book.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-book me-1"></i>Borrow This Book
+                    </button>
+                </form>
+                {% else %}
+                {% if has_reserved %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-clock me-1"></i>You have already reserved this book.
+                </div>
+                {% else %}
+                <form method="post" action="{% url 'books:reserve_book' book.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning w-100">
+                        <i class="bi bi-clock me-1"></i>Reserve This Book
+                    </button>
+                </form>
+                <small class="text-muted mt-2 d-block">
+                    We'll notify you when it's available.
+                </small>
+                {% endif %}
+                {% endif %}
+                {% else %}
+                <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-primary w-100">
+                    <i class="bi bi-box-arrow-in-right me-1"></i>Login to Borrow
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <a href="{% url 'books:book_list' %}" class="btn btn-outline-light w-100 mt-3">
+            <i class="bi bi-arrow-left me-1"></i>Back to Books
+        </a>
+    </div>
+</div>
+{% endblock %}
