@@ -51,6 +51,7 @@ A secure library management system built with Django, implementing OWASP securit
 
 3. **Install dependencies**
    ```bash
+   cd library_management
    pip install -r requirements.txt
    ```
 
@@ -60,10 +61,20 @@ A secure library management system built with Django, implementing OWASP securit
    cp .env.example .env
    
    # Edit .env and set your SECRET_KEY
+   # Generate a Secure SECRET_KEY
+   python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+
+   # Edit the .env File
+   # Open the newly created file in Notepad and repaste your key in SECRET KEY=your_random_key_here
+   notepad .env
    ```
 
 5. **Run migrations**
    ```bash
+
+   # Create Log Directories
+   mkdir logs
+   
    python manage.py migrate
    ```
 
