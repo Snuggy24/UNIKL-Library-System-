@@ -34,8 +34,8 @@ A secure library management system built with Django, implementing OWASP securit
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd library_management
+   git clone https://github.com/Snuggy24/UNIKL-Library-System-.git
+   cd UNIKL-Library-System-
    ```
 
 2. **Create virtual environment**
