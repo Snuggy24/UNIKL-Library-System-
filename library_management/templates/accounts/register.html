@@ -12,84 +12,10 @@
             <div class="card-body p-4">
                 <form method="post">
                     {% csrf_token %}
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="id_first_name" class="form-label">First Name</label>
-                            {{ form.first_name }}
-                            {% if form.first_name.errors %}
-                            <div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="id_last_name" class="form-label">Last Name</label>
-                            {{ form.last_name }}
-                            {% if form.last_name.errors %}
-                            <div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="id_email" class="form-label">Email Address</label>
-                        {{ form.email }}
-                        {% if form.email.errors %}
-                        <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="id_student_id" class="form-label">Student ID <small
-                                class="text-muted">(optional)</small></label>
-                        {{ form.student_id }}
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="id_password1" class="form-label">Password</label>
-                            {{ form.password1 }}
-                            {% if form.password1.errors %}
-                            <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="id_password2" class="form-label">Confirm Password</label>
-                            {{ form.password2 }}
-                            {% if form.password2.errors %}
-                            <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <!-- CAPTCHA -->
-                    <div class="mb-3">
-                        <label for="id_captcha" class="form-label">Security Verification</label>
-                        
-                        <div class="mb-2">
-                            <img src="{{ form.captcha.image_url }}" alt="CAPTCHA" style="border: 1px solid #ddd; padding: 5px; background: #f9f9f9;">
-                            <button type="button" class="btn btn-sm btn-outline-secondary ms-2" onclick="refreshCaptcha()">
-                                <i class="bi bi-arrow-clockwise"></i> Refresh
-                            </button>
-                        </div>
-                        
-                        {{ form.captcha }}
-                        
-                        {% if form.captcha.errors %}
-                        <div class="text-danger small mt-1">{{ form.captcha.errors.0 }}</div>
-                        {% endif %}
-                        
-                        <small class="text-muted">Enter the characters shown in the image above.</small>
-                    </div>
-                    <!-- END CAPTCHA -->
-
-                    {% if form.non_field_errors %}
-                    <div class="alert alert-danger">
-                        {% for error in form.non_field_errors %}
-                        {{ error }}
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-
+                    
+                    <!-- Render all fields automatically (SIMPLEST) -->
+                    {{ form.as_p }}
+                    
                     <button type="submit" class="btn btn-primary w-100 py-2 mt-2">
                         <i class="bi bi-person-plus me-2"></i>Register
                     </button>
@@ -105,16 +31,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-function refreshCaptcha() {
-    const captchaImage = document.querySelector('img[alt="CAPTCHA"]');
-    if (captchaImage) {
-        const timestamp = new Date().getTime();
-        captchaImage.src = "{{ form.captcha.image_url }}?" + timestamp;
-    }
-}
-</script>
 {% endblock %}
