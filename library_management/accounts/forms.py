@@ -4,10 +4,18 @@ Forms for user authentication and profile management.
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import User
+from captcha.fields import CaptchaField
 
 
 class UserRegistrationForm(UserCreationForm):
     """Form for user registration."""
+
+    captcha = CaptchaField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter the text you see'
+        })
+    )
     
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={
