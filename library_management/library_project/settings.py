@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Third party apps
+    'captcha',
     'crispy_forms',
     'crispy_bootstrap5',
     # Local apps
