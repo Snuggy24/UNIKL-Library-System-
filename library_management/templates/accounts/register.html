@@ -61,6 +61,20 @@
                         </div>
                     </div>
 
+                    <!-- CAPTCHA -->
+                    <div class="mb-3">
+                        <label class="form-label">Security Verification</label>
+                        
+                        <!-- render CAPTCHA -->
+                        {{ form.captcha }}
+                        
+                        {% if form.captcha.errors %}
+                        <div class="text-danger small mt-1">{{ form.captcha.errors.0 }}</div>
+                        {% endif %}
+                        
+                        <small class="text-muted">Enter the characters shown in the image above.</small>
+                    </div>
+
                     {% if form.non_field_errors %}
                     <div class="alert alert-danger">
                         {% for error in form.non_field_errors %}
