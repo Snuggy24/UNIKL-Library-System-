@@ -143,6 +143,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'accounts:login'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'noreply@library-system.local'
 
 # ==============================================
 # SECURITY SETTINGS (OWASP Compliant)
@@ -231,3 +233,13 @@ LOGGING = {
         },
     },
 }
+
+# ==============================================
+# hCaptcha Configuration (Security - Bot Protection)
+# ==============================================
+HCAPTCHA_SITEKEY = '10000000-ffff-ffff-ffff-000000000001'  # Test key - safe for development
+HCAPTCHA_SECRET = '0x0000000000000000000000000000000000000000'  # Test secret
+
+# For production, use real keys from https://www.hcaptcha.com/
+# HCAPTCHA_SITEKEY = os.environ.get('HCAPTCHA_SITEKEY', 'your-production-sitekey')
+# HCAPTCHA_SECRET = os.environ.get('HCAPTCHA_SECRET', 'your-production-secret')
