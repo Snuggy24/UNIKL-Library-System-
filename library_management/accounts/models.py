@@ -51,6 +51,14 @@ class User(AbstractUser):
         choices=Role.choices,
         default=Role.STUDENT,
     )
+
+    # Email verification fields
+    is_email_verified = models.BooleanField(default=False)
+    email_verification_token = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
     
     # Additional profile fields
     phone_number = models.CharField(max_length=15, blank=True)
@@ -61,10 +69,6 @@ class User(AbstractUser):
         blank=True,
         null=True,
         help_text='Upload a profile picture (max 2MB)',
-        # we will add validator in migration or just rely on form validation for now 
-        # to avoid circular imports if validator depends on other things, 
-        # but better to import it inside if needed or just use form validation.
-        # Actually proper way is to import it.
     )
     
     # Timestamps
