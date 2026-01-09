@@ -8,7 +8,8 @@ from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from django.views.generic import CreateView, DetailView, UpdateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
+from django.core.mail import send_mail
 from .models import User, AuditLog
 from .forms import UserRegistrationForm, UserLoginForm, ProfileUpdateForm
 
@@ -21,8 +22,13 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
     
     def form_valid(self, form):
-        # Log successful login
         user = form.get_user()
+        # Block login if email not verified
+        if not user.is_email_verified:
+            messages.error(self.request, 
+                'Please verify your email before logging in. Check your inbox or request a new verification link.')
+            return redirect('accounts:login')
+        # Log successful login
         AuditLog.log(
             user=user,
             action=AuditLog.Action.LOGIN,
@@ -64,6 +70,9 @@ class RegisterView(CreateView):
     
     def form_valid(self, form):
         response = super().form_valid(form)
+        # Generate verification token and send email
+        token = self.object.generate_verification_token()
+        self.send_verification_email(self.object, token)
         # Log user registration
         AuditLog.log(
             user=self.object,
@@ -75,8 +84,20 @@ class RegisterView(CreateView):
             ip_address=self.get_client_ip(),
             user_agent=self.request.META.get('HTTP_USER_AGENT', '')[:500]
         )
-        messages.success(self.request, 'Registration successful! Please login.')
+        messages.success(self.request, 'Registration successful! Please check your email to verify your account.')
         return response
+    
+    def send_verification_email(self, user, token):
+        """Send verification email to newly registered user."""
+        verification_url = self.request.build_absolute_uri(
+            reverse('accounts:verify_email', kwargs={'token': token})
+        )
+        send_mail(
+            subject='Verify your email - UNIKL Library System',
+            message=f'Hi {user.first_name},\n\nPlease click the link below to verify your email:\n\n{verification_url}\n\nThis link expires in 24 hours.\n\nIf you did not create an account, please ignore this email.',
+            from_email=None,  # Uses DEFAULT_FROM_EMAIL from settings
+            recipient_list=[user.email],
+        )
     
     def get_client_ip(self):
         x_forwarded_for = self.request.META.get('HTTP_X_FORWARDED_FOR')
@@ -144,3 +165,49 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'You have been logged out.')
     return redirect('accounts:login')
+
+
+def verify_email(request, token):
+    """Handle email verification link."""
+    try:
+        user = User.objects.get(email_verification_token=token)
+        if user.is_email_verified:
+            messages.info(request, 'Your email is already verified. You can log in.')
+        elif user.is_token_valid():
+            user.is_email_verified = True
+            user.email_verification_token = None  # Clear token after use
+            user.save()
+            messages.success(request, 'Email verified successfully! You can now log in.')
+        else:
+            messages.error(request, 'This verification link has expired. Please request a new one.')
+            return redirect('accounts:resend_verification')
+    except User.DoesNotExist:
+        messages.error(request, 'Invalid verification link.')
+    return redirect('accounts:login')
+
+
+def resend_verification(request):
+    """Resend verification email."""
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        try:
+            user = User.objects.get(email=email)
+            if user.is_email_verified:
+                messages.info(request, 'This email is already verified. You can log in.')
+            else:
+                token = user.generate_verification_token()
+                verification_url = request.build_absolute_uri(
+                    reverse('accounts:verify_email', kwargs={'token': token})
+                )
+                send_mail(
+                    subject='Verify your email - UNIKL Library System',
+                    message=f'Hi {user.first_name},\n\nPlease click the link below to verify your email:\n\n{verification_url}\n\nThis link expires in 24 hours.\n\nIf you did not request this, please ignore this email.',
+                    from_email=None,
+                    recipient_list=[user.email],
+                )
+                messages.success(request, 'Verification email sent! Please check your inbox.')
+        except User.DoesNotExist:
+            # Don't reveal if email exists (security best practice)
+            messages.success(request, 'If this email is registered, a verification link will be sent.')
+        return redirect('accounts:resend_verification')
+    return render(request, 'accounts/resend_verification.html')
