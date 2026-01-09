@@ -5,6 +5,7 @@ Django>=5.0
 django-crispy-forms>=2.0
 crispy-bootstrap5>=2024.1
 django-simple-captcha>=0.5.20
+django-simple-captcha>=0.6
 
 # Image Processing
 Pillow>=10.0
@@ -18,13 +19,12 @@ argon2-cffi>=23.1.0
 # File Type Validation (Windows support)
 python-magic-bin>=0.4.14
 
-
 # Production Server (optional)
 gunicorn>=21.0
 
 # Database (optional - PostgreSQL)
-# psycopg2-binary>=2.9
+psycopg2-binary>=2.9
 
 # Development/Testing
-# bandit>=1.7  # Security linting
-# safety>=2.3  # Dependency vulnerability scanning
+bandit>=1.7  # Security linting
+safety>=2.3  # Dependency vulnerability scanning
