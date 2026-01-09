@@ -59,6 +59,7 @@ class User(AbstractUser):
         blank=True,
         null=True
     )
+    email_token_created_at = models.DateTimeField(null=True, blank=True)
     
     # Additional profile fields
     phone_number = models.CharField(max_length=15, blank=True)
@@ -109,6 +110,22 @@ class User(AbstractUser):
     def can_manage_users(self):
         """Check if user can manage other users."""
         return self.role == self.Role.ADMIN
+    
+    def generate_verification_token(self):
+        """Generate a secure verification token."""
+        import secrets
+        self.email_verification_token = secrets.token_urlsafe(32)
+        self.email_token_created_at = timezone.now()
+        self.save()
+        return self.email_verification_token
+    
+    def is_token_valid(self):
+        """Check if the verification token is still valid (24 hours)."""
+        if not self.email_token_created_at:
+            return False
+        from datetime import timedelta
+        expiry_time = self.email_token_created_at + timedelta(hours=24)
+        return timezone.now() < expiry_time
 
 
 class AuditLog(models.Model):
