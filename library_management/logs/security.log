@@ -1,0 +1,14 @@
+WARNING 2026-01-12 21:25:08,331 log Forbidden (CSRF token from POST incorrect.): /accounts/login/
+WARNING 2026-01-12 21:27:46,681 base Session data corrupted
+WARNING 2026-01-12 21:27:48,241 base Session data corrupted
+WARNING 2026-01-12 21:27:53,714 base Session data corrupted
+WARNING 2026-01-12 21:27:53,845 base Session data corrupted
+WARNING 2026-01-12 21:30:32,522 base Session data corrupted
+WARNING 2026-01-12 21:30:32,535 base Session data corrupted
+WARNING 2026-01-12 21:30:52,782 base Session data corrupted
+WARNING 2026-01-12 21:30:52,789 base Session data corrupted
+WARNING 2026-01-12 21:30:57,015 base Session data corrupted
+WARNING 2026-01-12 21:31:06,453 base Session data corrupted
+WARNING 2026-01-12 21:31:19,068 base Session data corrupted
+WARNING 2026-01-12 21:32:30,143 log Forbidden (CSRF token from POST incorrect.): /accounts/login/
+WARNING 2026-01-12 22:03:45,803 log Forbidden (CSRF token from POST incorrect.): /accounts/login/

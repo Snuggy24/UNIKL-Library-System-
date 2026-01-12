@@ -87,7 +87,6 @@ AUTH_USER_MODEL = 'accounts.User'
 
 # ==============================================
 # SECURITY: Password Validation (OWASP ASVS V2)
-# Strong password requirements
 # ==============================================
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -139,11 +138,28 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
-# Login/Logout URLs
+# ==============================================
+# SECURITY: Authentication & Email Settings
+# ==============================================
 LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'accounts:login'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Conditional Email Backend for Development vs. Production
+if DEBUG:
+    # This saves emails as .log files in a folder called 'sent_emails'
+    # It won't have the '=' breaks!
+    EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+    EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+else:
+    # SMTP configuration for production environment
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = os.environ.get('EMAIL_HOST')
+    EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+    EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() == 'true'
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
 DEFAULT_FROM_EMAIL = 'noreply@library-system.local'
 
 # ==============================================
@@ -185,13 +201,13 @@ if not DEBUG:
 # ==============================================
 # File Upload Security (OWASP File Upload)
 # ==============================================
-FILE_UPLOAD_MAX_MEMORY_SIZE = int(os.environ.get('FILE_UPLOAD_MAX_MEMORY_SIZE', 5 * 1024 * 1024))  # 5 MB
-DATA_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024  # 5 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = int(os.environ.get('FILE_UPLOAD_MAX_MEMORY_SIZE', 5 * 1024 * 1024))
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
 
 # Allowed file extensions for book covers
 ALLOWED_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp']
 ALLOWED_IMAGE_MIMETYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
-MAX_IMAGE_SIZE = int(os.environ.get('MAX_IMAGE_SIZE', 2 * 1024 * 1024))  # 2 MB
+MAX_IMAGE_SIZE = int(os.environ.get('MAX_IMAGE_SIZE', 2 * 1024 * 1024))
 
 # ==============================================
 # Library Business Settings
@@ -202,7 +218,6 @@ MAX_BOOKS_PER_USER = int(os.environ.get('MAX_BOOKS_PER_USER', 5))
 
 # ==============================================
 # Logging Configuration (OWASP ASVS V7)
-# Logs security events without sensitive data
 # ==============================================
 LOGGING = {
     'version': 1,
@@ -237,9 +252,5 @@ LOGGING = {
 # ==============================================
 # hCaptcha Configuration (Security - Bot Protection)
 # ==============================================
-HCAPTCHA_SITEKEY = '10000000-ffff-ffff-ffff-000000000001'  # Test key - safe for development
-HCAPTCHA_SECRET = '0x0000000000000000000000000000000000000000'  # Test secret
-
-# For production, use real keys from https://www.hcaptcha.com/
-# HCAPTCHA_SITEKEY = os.environ.get('HCAPTCHA_SITEKEY', 'your-production-sitekey')
-# HCAPTCHA_SECRET = os.environ.get('HCAPTCHA_SECRET', 'your-production-secret')
+HCAPTCHA_SITEKEY = '10000000-ffff-ffff-ffff-000000000001'
+HCAPTCHA_SECRET = '0x0000000000000000000000000000000000000000'
