@@ -173,11 +173,10 @@ library_management/
 
 | Page | Screenshot |
 |------|------------|
-| **Home Page** | ![Home Page](screenshots/home_page.png) |
-| **Login Page** | ![Login Page](screenshots/login_page.png) |
-| **Admin Dashboard** | ![Admin Dashboard](screenshots/admin_dashboard.png) |
-| **User Profile** | ![User Profile](screenshots/user_profile.png) |
-
+| **Home Page** | ![Home Page](library_management/home_page.png) |
+| **Login Page** | ![Login Page](library_management/login_page.png) |
+| **Admin Dashboard** | ![Admin Dashboard](library_management/admin_dashboard.png) |
+| **User Profile** | ![User Profile](library_management/user_profile.png) |
 > **Note**: Please save screenshots of your running application into the `screenshots/` folder with the filenames above to populate this section.
 
 ## License
