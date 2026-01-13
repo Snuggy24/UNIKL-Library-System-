@@ -184,10 +184,10 @@ library_management/
 
 | Page | Screenshot |
 |------|------------|
-| **Home Page** | ![Home Page](screenshots/home_page.png) |
-| **Login Page** | ![Login Page](screenshots/login_page.png) |
-| **Admin Dashboard** | ![Admin Dashboard](screenshots/admin_dashboard.png) |
-| **User Profile** | ![User Profile](screenshots/user_profile.png) |
+| **Home Page** | <img width="1908" height="959" alt="home_page" src="https://github.com/user-attachments/assets/0e562d6b-fc2e-4f2b-994e-96f8d3d67368" /> |
+| **Login Page** | <img width="1919" height="968" alt="login_page" src="https://github.com/user-attachments/assets/7926070b-1efe-4068-9db5-77fd95b9e3f8" /> |
+| **Admin Dashboard** | <img width="1919" height="939" alt="admin_dashboard" src="https://github.com/user-attachments/assets/97ca5c5a-607f-4ab3-8394-7ba0fcb6c0ca" /> |
+| **User Profile** | <img width="1899" height="964" alt="user_profile" src="https://github.com/user-attachments/assets/736c5081-e021-4214-a8dc-9b1097204df7" /> |
 
 > **Note**: Please save screenshots of your running application into the `screenshots/` folder with the filenames above to populate this section.
 
